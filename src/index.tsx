@@ -10,11 +10,23 @@ import {
   createRoutesFromElements,
 } from "react-router-dom";
 import { Home } from "./pages/home";
+import ProtectedRoute from "./services/protected-route";
+import Cart from "./pages/cart";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
-      <Route path="" element={<Home />} />
+      <Route path="/" element={<Home />} />
+      <Route path="/home" element={<Home />} />
+      <Route path="/books" element={<Home />} />
+      <Route
+        path="/cart"
+        element={
+          <ProtectedRoute>
+            <Cart />
+          </ProtectedRoute>
+        }
+      />
     </Route>
   )
 );

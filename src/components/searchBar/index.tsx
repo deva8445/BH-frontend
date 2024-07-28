@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import { TextField, InputAdornment, IconButton } from "@mui/material";
-// import { Search as SearchIcon } from "@mui/icons-material";
+import { IoSearch } from "react-icons/io5";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -24,7 +24,7 @@ const SearchBar: FC<SearchBarProps> = ({ onSearch, style }) => {
   }, [query]);
 
   return (
-    <div className={`p-4 ${style}`}>
+    <div className={`${style}`}>
       <TextField
         value={query}
         onChange={handleChange}
@@ -40,7 +40,7 @@ const SearchBar: FC<SearchBarProps> = ({ onSearch, style }) => {
           endAdornment: (
             <InputAdornment position="end">
               <IconButton onClick={handleSearch}>
-                {/* <SearchIcon /> */}
+                <IoSearch />
               </IconButton>
             </InputAdornment>
           ),

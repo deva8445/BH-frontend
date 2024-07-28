@@ -5,24 +5,18 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 import Auth from "../auth";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import CustomModal from "../modal";
 import { AuthUser } from "../../services/auth-user";
 import React from "react";
 import { authNav, guestNav, style } from "./constants";
 
 const Navbar = () => {
-  const { getToken, user, logout } = AuthUser();
+  const { getToken, getUser, logout } = AuthUser();
   const [open, setOpen] = useState<boolean>(false);
-  const [navPath, setNavPath] = useState<any[]>();
 
-  const handleLogout = () => {
-    logout();
-    setNavPath(guestNav);
-  };
-
-  useEffect(() => {
-    setNavPath(!!getToken() ? authNav : guestNav);
+  const navPath = useMemo(() => {
+    return !!getToken() ? authNav : guestNav;
   }, [getToken()]);
 
   return (
@@ -41,10 +35,10 @@ const Navbar = () => {
             {getToken() && (
               <div className="text-orange-600">
                 <span>Hi </span>
-                {user?.firstName} !
+                {getUser()?.firstName} !
               </div>
             )}
-            <img src="/path/to/logo.png" alt="your logo" className="h-8" />
+            <img src="logo.png" alt="your logo" className="h-[3rem]" />
           </Typography>
           <Box className="hidden md:flex space-x-4">
             {navPath?.map((item: any) => {
@@ -64,7 +58,7 @@ const Navbar = () => {
             <Button
               variant="contained"
               color="primary"
-              onClick={!!getToken() ? handleLogout : () => setOpen(true)}
+              onClick={!!getToken() ? () => logout() : () => setOpen(true)}
             >
               {!!getToken() ? "Logout" : "LogIn / SignUp"}
             </Button>
@@ -77,7 +71,7 @@ const Navbar = () => {
         open={open}
         handleClose={() => setOpen(false)}
       >
-        <Auth />
+        <Auth setOpen={setOpen} />
       </CustomModal>
     </>
   );

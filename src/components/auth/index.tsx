@@ -4,7 +4,7 @@ import { AUTH_SCREEN } from "../../constants/enum";
 import { SignUp } from "./signup";
 const headerImage = `${process.env.PUBLIC_URL}/authImage.jpg`;
 export interface IAuth {
-  setOpen?: Dispatch<SetStateAction<boolean>>;
+  setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 const Auth: FC<IAuth> = ({ setOpen }) => {
@@ -22,7 +22,9 @@ const Auth: FC<IAuth> = ({ setOpen }) => {
         <div className="border w-[40%] ">
           {
             {
-              [AUTH_SCREEN.LOGIN]: <Login screenType={setScreenType} />,
+              [AUTH_SCREEN.LOGIN]: (
+                <Login screenType={setScreenType} setOpen={setOpen} />
+              ),
               [AUTH_SCREEN.SIGNUP]: <SignUp screenType={setScreenType} />,
             }[screenType]
           }

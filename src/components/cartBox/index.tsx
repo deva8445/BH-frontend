@@ -3,21 +3,26 @@ import { TruncateString } from "../../utils/helper";
 import Auth from "../auth";
 import CustomModal from "../modal";
 import { CustomModalStyle } from "../modal/style";
+import { AuthUser } from "../../services/auth-user";
+import { ROLE } from "../../constants/enum";
 interface ICartBook {
   data: any;
   handleAddToCart?: any;
 }
 
 const CartBox: FC<ICartBook> = ({ data, handleAddToCart }) => {
+  const { getUser } = AuthUser();
+  const user = getUser();
+  const userType = user?.userType;
   return (
-    <div className="border shadow-xl w-[250px] rounded-lg overflow-hidden cursor-pointer">
+    <div className="border shadow-xl w-[220px] rounded-lg overflow-hidden cursor-pointer">
       <div className="flex justify-center">
         <img
           src={
             data.url ??
             "https://images.meesho.com/images/products/224396373/voihu_512.webp"
           }
-          className="w-full h-full"
+          className="w-full h-[200px]"
         />
       </div>
       <div className="px-4 mt-4">
@@ -32,21 +37,23 @@ const CartBox: FC<ICartBook> = ({ data, handleAddToCart }) => {
         <div className="text-xl font-semibold">
           ₹ {data.price}
           <span className="text-lg font-medium ml-2 line-through text-gray-400">
-            ₹ 250
+            ₹ {Number(data.price) + 150}
           </span>
         </div>
         <div className="text-gray-600">
           <span className="text-gray-400">Details : </span>
-          <TruncateString text={"data.description"} maxLength={30} />
+          <TruncateString text={data.description} maxLength={30} />
         </div>
-        <div className=" py-4">
-          <div
-            className="border p-2 w-full text-center bg-blue-500 rounded-md text-white cursor-pointer hover:text-orange-600 hover:bg-blue-300"
-            onClick={handleAddToCart}
-          >
-            Add to cart
+        {userType !== ROLE.SELLER && (
+          <div className=" py-4">
+            <div
+              className="border p-2 w-full text-center bg-blue-500 rounded-md text-white cursor-pointer hover:text-orange-600 hover:bg-blue-300"
+              onClick={handleAddToCart}
+            >
+              Add to cart
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

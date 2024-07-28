@@ -21,15 +21,11 @@ export const SignUp: FC<ISignUp> = ({ screenType }) => {
     email: "",
     contact: null,
     password: "",
-    userType: "",
+    userType: "buyer",
     storeName: "",
   });
 
-  const {
-    // loading: signupLoading,
-    // isError: signupError,
-    fetchData: signupService,
-  }: any = useService(
+  const { fetchData: signupService }: any = useService(
     async () =>
       await AUTH.signup(values).then((data) => setresponseData(data.data))
   );
@@ -41,6 +37,7 @@ export const SignUp: FC<ISignUp> = ({ screenType }) => {
   const handleSignup = async (e: any) => {
     e.preventDefault();
     await signupService();
+    screenType(AUTH_SCREEN.LOGIN);
   };
 
   const handleSelectionChange = (selectedOption: {
@@ -92,9 +89,10 @@ export const SignUp: FC<ISignUp> = ({ screenType }) => {
           <TextField
             label="Enter contact details"
             variant="outlined"
+            type="number"
             fullWidth
             className="bg-gray-100 rounded-md"
-            name="email"
+            name="contact"
             onChange={handleChange}
           />
         </div>
@@ -141,7 +139,7 @@ export const SignUp: FC<ISignUp> = ({ screenType }) => {
           className="bg-pink-500 text-white py-2 rounded-md hover:bg-pink-600"
           onClick={handleSignup}
         >
-          Sign in
+          Create Account
         </Button>
         <div className="flex justify-center space-x-2">
           <div className="text-center text-sm text-gray-500">

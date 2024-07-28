@@ -9,9 +9,10 @@ import { AuthUser } from "../../services/auth-user";
 
 export interface ILogin {
   screenType: Dispatch<SetStateAction<AUTH_SCREEN>>;
+  setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export const Login: FC<ILogin> = ({ screenType }) => {
+export const Login: FC<ILogin> = ({ screenType, setOpen }) => {
   const { setToken } = AuthUser();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -30,6 +31,7 @@ export const Login: FC<ILogin> = ({ screenType }) => {
   const handleLogin = async (e: any) => {
     e.preventDefault();
     await loginService();
+    setOpen(false);
   };
 
   const handleClickShowPassword = () => {

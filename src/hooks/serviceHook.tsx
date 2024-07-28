@@ -10,7 +10,6 @@ export const useService = (cb: any) => {
       await cb();
       setLoading(false);
     } catch (error) {
-      console.log(error);
       setLoading(false);
       setIsError(true);
     }

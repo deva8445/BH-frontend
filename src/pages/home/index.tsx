@@ -1,21 +1,17 @@
 import SearchBar from "../../components/searchBar";
 import CartBox from "../../components/cartBox";
 import { useService } from "../../hooks/serviceHook";
-import { Book } from "../../services/api.services";
+import { BOOK } from "../../services/api.services";
 import { useEffect, useState } from "react";
 import { NoRecordFound } from "../../components/no-record-found";
 import CustomModal from "../../components/modal";
 import Auth from "../../components/auth";
 import { CustomModalStyle } from "../../components/modal/style";
 import { AuthUser } from "../../services/auth-user";
-
-const style = new CustomModalStyle({
-  minHeight: "80%",
-  display: "grid",
-  width: "80%",
-  outline: "none",
-  border: "none",
-});
+import Button from "@mui/material/Button";
+import { MODAL_TYPE, ROLE } from "../../constants/enum";
+import { AddBookForm } from "../../components/modal-form/add-books";
+import { modalElement } from "../../constants/constant";
 
 const dummyBooks = [
   {
@@ -221,14 +217,21 @@ const dummyBooks = [
 ];
 
 export const Home = () => {
-  const { getToken } = AuthUser();
-  const [resposeData, setresponseData] = useState({ message: "", books: [] });
+  const { getToken, getUser } = AuthUser();
+  const user = getUser();
+  const userType = user?.userType || ROLE.GUEST;
+  const [resposeData, setresponseData] = useState<any>();
   const [open, setOpen] = useState<boolean>(false);
   const [query, setQuery] = useState<string>("");
+  const [modalType, setModalType] = useState<any>(
+    modalElement[MODAL_TYPE.AUTH]
+  );
+
+  const style = new CustomModalStyle(modalType.style);
 
   const { fetchData: getAllBooksService }: any = useService(
     async () =>
-      await Book.fetchAllBooks(query ? { searchBy: query } : null).then(
+      await BOOK.fetchAllBooks(query ? { searchBy: query } : null).then(
         (data) => setresponseData(data.data)
       )
   );
@@ -243,17 +246,37 @@ export const Home = () => {
     }
   };
 
+  const handleAddBooks = (modalType: MODAL_TYPE) => {
+    setModalType(modalElement[modalType]);
+    setOpen(true);
+  };
+
+  const handleUpdate = () => {
+    getAllBooksService();
+    setOpen(false);
+  };
+
   useEffect(() => {
     getAllBooksService();
   }, [query]);
 
   return (
-    <div>
-      <div className="flex justify-center py-5">
+    <div className="pb-10">
+      <div className="flex justify-center py-10 space-x-12">
         <SearchBar onSearch={handleSearch} style={"w-[50%]"} />
+        {userType === ROLE.SELLER && (
+          <Button
+            className="h-[3rem]"
+            variant="contained"
+            color="primary"
+            onClick={() => handleAddBooks(MODAL_TYPE.ADD_BOOK)}
+          >
+            + Add Books
+          </Button>
+        )}
       </div>
       <div className="w-full">
-        {!!resposeData?.books ? (
+        {resposeData?.books?.length ? (
           <div className="w-[60%] mx-auto gap-10 grid grid-cols-4">
             {resposeData?.books?.map((item: any) => (
               <CartBox
@@ -269,11 +292,15 @@ export const Home = () => {
       </div>
       <CustomModal
         style={style}
-        title={"Login / Sign Up first"}
+        title={modalType.name}
         open={open}
         handleClose={() => setOpen(false)}
       >
-        <Auth setOpen={setOpen} />
+        {MODAL_TYPE.AUTH === modalType.type ? (
+          <Auth setOpen={setOpen} />
+        ) : (
+          <AddBookForm handleUpdate={handleUpdate} />
+        )}
       </CustomModal>
     </div>
   );

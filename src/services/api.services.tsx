@@ -2,9 +2,11 @@ import axios from "axios";
 // Request Interceptor
 axios.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("auth");
+    const token = sessionStorage.getItem("auth");
+    if (token) {
+      config.headers.authorization = `Bearer ${token}`;
+    }
     config.baseURL = process.env.REACT_APP_API_BASE_URL;
-    config.headers.token = `Bearer ${token}`;
     return config;
   },
   (error) => {
@@ -46,12 +48,12 @@ export const AUTH = {
   },
 };
 
-export const Book = {
+export const BOOK = {
   fetchAllBooks: async function (payload: any) {
     const queryParams = queryBuilder(payload);
     return axios.get(`/books?${queryParams}`);
   },
-  login: async function (payload: any) {
-    return axios.post("/auth/login", payload);
+  addBook: async function (payload: any) {
+    return axios.post("/books", payload);
   },
 };

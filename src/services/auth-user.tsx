@@ -27,7 +27,7 @@ export const AuthUser = () => {
     sessionStorage.setItem("user", JSON.stringify(user));
     setToken(token);
     setUser(user);
-    navigate("/");
+    navigate("/books");
   };
 
   const logout = () => {
@@ -46,5 +46,6 @@ export const AuthUser = () => {
     user: memoizedUser,
     getToken,
     logout,
+    getUser,
   };
 };
